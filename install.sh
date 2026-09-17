@@ -57,7 +57,8 @@ udevadm control --reload-rules
 udevadm trigger --subsystem-match=usb || true
 
 systemctl daemon-reload
-systemctl enable --now oki-print-server.service
+systemctl enable oki-print-server.service
+systemctl restart oki-print-server.service
 
 echo
 echo "OKI print server installed and started."

@@ -161,7 +161,11 @@ Machine-readable service status is available at:
 
 ```sh
 curl http://<PI-IP>:8080/healthz
+curl http://<PI-IP>:8080/api/status
 ```
+
+Both URLs return the same JSON. `/api/status` is provided for control-panel and
+monitoring-client compatibility.
 
 Set `web.enabled = false` to disable HTTP, or bind `web.host` to `127.0.0.1`
 to make it local-only. The page uses a per-process form token to prevent blind

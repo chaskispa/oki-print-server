@@ -191,7 +191,7 @@ class WebControlServer:
 
             def do_GET(self) -> None:
                 parsed = urlparse(self.path)
-                if parsed.path == "/healthz":
+                if parsed.path in ("/healthz", "/api/status"):
                     snapshot = panel.controller.status_snapshot()
                     body = json.dumps(snapshot, sort_keys=True).encode("utf-8")
                     status = 200 if snapshot["healthy"] else 503
