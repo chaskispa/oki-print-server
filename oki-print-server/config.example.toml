@@ -1,0 +1,23 @@
+[network]
+host = "0.0.0.0"
+port = 5005
+max_packet_bytes = 8192
+
+[printer]
+device = "/dev/usb/lp0"
+encoding = "cp437"
+trailing_lines = 2
+form_feed = false
+retry_seconds = 3.0
+
+[queue]
+max_jobs = 100
+
+[web]
+enabled = true
+host = "0.0.0.0"
+port = 8080
+max_text_bytes = 8192
+
+[logging]
+level = "INFO"
