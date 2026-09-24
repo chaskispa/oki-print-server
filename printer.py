@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import unicodedata
 
 
 ESC = b"\x1b"
@@ -40,6 +41,32 @@ def normalize_newlines(text: str) -> str:
     return text.replace("\r\n", "\n").replace("\r", "\n").replace("\n", "\r\n")
 
 
+def encode_text(text: str, encoding: str) -> bytes:
+    """Encode text, transliterating unsupported accented letters to ASCII.
+
+    Keep characters that the configured printer encoding supports.  For an
+    unsupported character, first remove Unicode combining marks so, for
+    example, ``Á`` becomes ``A`` instead of the encoder's ``?`` replacement.
+    Characters with no useful transliteration retain the normal replacement
+    behavior.
+    """
+    encodable_text: list[str] = []
+    for character in unicodedata.normalize("NFC", text):
+        try:
+            character.encode(encoding)
+        except UnicodeEncodeError:
+            encodable_text.append(
+                "".join(
+                    part
+                    for part in unicodedata.normalize("NFKD", character)
+                    if not unicodedata.combining(part)
+                )
+            )
+        else:
+            encodable_text.append(character)
+    return "".join(encodable_text).encode(encoding, errors="replace")
+
+
 class PrinterError(OSError):
     """An error while opening or writing the printer device."""
 
@@ -64,7 +91,7 @@ class Printer:
         self.append_form_feed = append_form_feed
 
     def prepare(self, text: str) -> bytes:
-        body = normalize_newlines(text).encode(self.encoding, errors="replace")
+        body = encode_text(normalize_newlines(text), self.encoding)
         ending = form_feed() if self.append_form_feed else line_feed(self.trailing_lines)
         return body + ending
 

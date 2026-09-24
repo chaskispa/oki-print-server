@@ -93,10 +93,13 @@ sudo systemctl restart oki-print-server
 
 Incoming datagrams must be UTF-8. Only trailing NUL bytes are removed. CR, LF,
 and CRLF line endings are converted to CR+LF; other spacing is preserved. Text
-is encoded for the printer with replacement for unsupported characters. CP437
-is the default because it is ASCII-compatible and common in Epson-compatible
-printer modes. If accented characters do not match the printer's configured
-character set, try `latin-1` and set the printer menu to the matching code page.
+is encoded for the printer. Accented letters that are not available in the
+configured encoding are printed without the accent (for example, `Á` becomes
+`A`) instead of becoming `?`; other unsupported characters use replacement.
+CP437 is the default because it is ASCII-compatible and common in
+Epson-compatible printer modes. If accented characters do not match the
+printer's configured character set, try `latin-1` and set the printer menu to
+the matching code page.
 
 Two CR+LF pairs follow each job by default. Set `form_feed = true` to append a
 form feed instead; it does not add both. The server never resets the printer
